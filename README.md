@@ -318,8 +318,17 @@ MIT
 
 如果这个项目对你有帮助，欢迎请我喝杯咖啡。你的支持会直接变成后续的数据源、推送通道、浏览器适配器和文档质量。
 
-| 微信赞赏码 | 支付宝收款码 |
-|---|---|
-| ![微信赞赏码](docs/wxzsm.jpg) | ![支付宝收款码](docs/alskm.jpg) |
-
-> 如果你打算在 GitHub 上长期公开这两个码，建议把仓库主分支设为保护分支，并开启 `CODEOWNERS` + 必需审查，避免图片被随手替换。
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/wxzsm.jpg" alt="微信赞赏码" width="240" />
+      <br />
+      <sub>微信赞赏码</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/alskm.jpg" alt="支付宝收款码" width="240" />
+      <br />
+      <sub>支付宝收款码</sub>
+    </td>
+  </tr>
+</table>
