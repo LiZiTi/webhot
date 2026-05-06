@@ -6,11 +6,13 @@ import { Queue, Worker, type JobsOptions } from 'bullmq';
 import { Redis } from 'ioredis';
 import { createAdapter, type SourceConfig } from '@webhot/adapters';
 import { WebHotCore } from '@webhot/core';
+import { createLogger } from '@webhot/logging';
 import type { HotItem } from '@webhot/schemas';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = resolve(__dirname, '../../../configs/sources.yaml');
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+const log = createLogger('worker');
 
 interface SourcesFile {
   sources: SourceConfig[];
@@ -58,11 +60,11 @@ const fetchWorker = new Worker<SourceConfig>(
 
 fetchWorker.on('completed', (job) => {
   const r = job.returnvalue as { items: number; elapsed: number } | undefined;
-  console.log(`[worker] ${job.data.id}: ingested ${r?.items || 0} items (${r?.elapsed || 0}ms)`);
+  log.success(`${job.data.id} ingested ${r?.items || 0} items`, `${r?.elapsed || 0}ms`);
 });
 
 fetchWorker.on('failed', (job, err) => {
-  console.error(`[worker] ${job?.data.id} failed (attempt ${job?.attemptsMade}):`, err.message);
+  log.error(`${job?.data.id} failed (attempt ${job?.attemptsMade || 0})`, err.message);
 });
 
 // --- 定时调度器: 将 sources 加入重复队列 ---
@@ -85,7 +87,7 @@ async function scheduleRepeatingJobs(config: SourcesFile) {
         ...getJobOptions(source),
       },
     );
-    console.log(`[worker] scheduled ${source.id} every ${source.interval || 300}s`);
+    log.info(`scheduled ${source.id}`, `every ${source.interval || 300}s`);
 
     // 立即触发一次
     await fetchQueue.add(`fetch-${source.id}-initial`, source, {
@@ -94,7 +96,7 @@ async function scheduleRepeatingJobs(config: SourcesFile) {
     });
   }
 
-  console.log(`[webhot-worker] ${config.sources.length} sources scheduled via BullMQ`);
+  log.success(`${config.sources.length} sources scheduled`, 'BullMQ repeatable jobs');
 }
 
 function getJobOptions(source: SourceConfig): JobsOptions {
@@ -115,7 +117,7 @@ fetchWorker.on('failed', (job) => {
   consecutiveFailures.set(key, count);
 
   if (count >= 5) {
-    console.error(`[worker] CIRCUIT BREAKER: ${key} has failed ${count} consecutive times. Pausing for 5 minutes.`);
+    log.warn(`circuit breaker tripped for ${key}`, `${count} consecutive failures, pausing 5 minutes`);
     // 暂停该源 5 分钟
     setTimeout(() => consecutiveFailures.delete(key), 300_000);
   }
@@ -128,14 +130,14 @@ fetchWorker.on('completed', (job) => {
 // --- 启动 ---
 
 async function main() {
-  console.log('[webhot-worker] starting with Redis+BullMQ...');
+  log.section('WebHot Worker', 'Redis + BullMQ');
 
   let config: SourcesFile;
   try {
     const raw = readFileSync(CONFIG_PATH, 'utf-8');
     config = YAML.parse(raw) as SourcesFile;
   } catch (err) {
-    console.error('[webhot-worker] config error:', (err as Error).message);
+    log.error('config error', (err as Error).message);
     process.exit(1);
   }
 
@@ -143,7 +145,7 @@ async function main() {
 
   // 优雅关闭
   const shutdown = async () => {
-    console.log('\n[webhot-worker] shutting down...');
+    log.warn('shutting down');
     await fetchWorker.close();
     await fetchQueue.close();
     connection.disconnect();
@@ -153,10 +155,19 @@ async function main() {
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
 
-  console.log('[webhot-worker] running with BullMQ');
+  log.panel(
+    'Worker Ready',
+    [
+      { label: 'Status', value: 'running' },
+      { label: 'Sources', value: config.sources.length },
+      { label: 'Queue', value: 'BullMQ repeatable jobs' },
+      { label: 'Mode', value: 'watch + ingest' },
+    ],
+    'Redis-backed scheduling and ingestion',
+  );
 }
 
 main().catch(err => {
-  console.error('[webhot-worker] fatal:', err);
+  log.error('fatal', err);
   process.exit(1);
 });

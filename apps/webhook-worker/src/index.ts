@@ -4,9 +4,11 @@ import { createHmac } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
 import { SignalRepo } from '@webhot/storage';
+import { createLogger } from '@webhot/logging';
 import type { Signal } from '@webhot/schemas';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const log = createLogger('webhook');
 
 // --- 配置 ---
 
@@ -143,7 +145,7 @@ class WebhookDispatcher {
   /** 重试队列 */
   private _enqueueRetry(ep: WebhookEndpoint, payload: WebhookPayload, attempt: number, maxRetry: number): void {
     if (attempt >= maxRetry) {
-      console.error(`[webhook] max retries exceeded for ${payload.event_id} -> ${ep.url}`);
+      log.error(`max retries exceeded for ${payload.event_id}`, ep.url);
       return;
     }
     const key = `${payload.event_id}:${ep.id}`;
@@ -159,7 +161,7 @@ class WebhookDispatcher {
 
     for (const [key, item] of entries) {
       const delay = delays[item.attempt] || 300_000;
-      console.log(`[webhook] retrying ${item.payload.event_id} (attempt ${item.attempt + 1}) in ${delay / 1000}s`);
+      log.warn(`retrying ${item.payload.event_id} (attempt ${item.attempt + 1})`, `${delay / 1000}s`);
 
       setTimeout(async () => {
         const body = JSON.stringify(item.payload);
@@ -191,10 +193,19 @@ function loadWebhookConfig(): WebhookEndpoint[] {
 // --- 主入口 ---
 
 async function main() {
-  console.log('[webhook-worker] starting...');
+  log.section('Webhook Worker', 'event dispatcher');
 
   const webhooks = loadWebhookConfig();
-  console.log(`[webhook-worker] loaded ${webhooks.length} webhook endpoints`);
+  log.panel(
+    'Webhook Dispatcher',
+    [
+      { label: 'Status', value: 'running' },
+      { label: 'Endpoints', value: webhooks.length },
+      { label: 'Interval', value: '30s poll' },
+      { label: 'Mode', value: 'push notifications' },
+    ],
+    'In-memory retry queue + HMAC signed webhooks',
+  );
 
   const dispatcher = new WebhookDispatcher(webhooks);
 
@@ -206,11 +217,9 @@ async function main() {
 
   process.on('SIGINT', () => { clearInterval(pollInterval); process.exit(0); });
   process.on('SIGTERM', () => { clearInterval(pollInterval); process.exit(0); });
-
-  console.log('[webhook-worker] dispatcher running (30s interval)');
 }
 
 main().catch(err => {
-  console.error('[webhook-worker] fatal:', err);
+  log.error('fatal', err);
   process.exit(1);
 });

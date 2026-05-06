@@ -2,8 +2,10 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { WebHotCore } from '@webhot/core';
+import { createLogger } from '@webhot/logging';
 
 const core = new WebHotCore();
+const log = createLogger('mcp');
 
 const server = new McpServer({
   name: 'webhot',
@@ -240,4 +242,13 @@ server.tool(
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
-console.error('[webhot-mcp] server started via stdio');
+log.panel(
+  'MCP Server',
+  [
+    { label: 'Status', value: 'ready' },
+    { label: 'Transport', value: 'stdio' },
+    { label: 'Mode', value: 'agent pull access' },
+    { label: 'Tools', value: 'world / timeline / signals / explain' },
+  ],
+  'OpenAI / Claude / Cursor friendly',
+);

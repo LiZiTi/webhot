@@ -3,14 +3,14 @@ import { BaseAdapter } from './base.js';
 import type { FetchParams, RawHotItem, HotItem } from '@webhot/schemas';
 
 interface RssItem {
-  title?: string;
-  link?: string;
-  description?: string;
-  pubDate?: string;
-  'dc:creator'?: string;
-  author?: string;
-  category?: string | string[];
-  guid?: string;
+  title?: unknown;
+  link?: unknown;
+  description?: unknown;
+  pubDate?: unknown;
+  'dc:creator'?: unknown;
+  author?: unknown;
+  category?: unknown;
+  guid?: unknown;
 }
 
 interface RssFeed {
@@ -55,14 +55,14 @@ export class SoPilotAdapter extends BaseAdapter {
       const items = feed?.rss?.channel?.item || [];
 
       return items.map((item, i) => {
-        const title = item.title?.trim() || '';
-        const link = item.link || '';
-        const description = item.description || '';
-        const pubDate = item.pubDate || new Date().toISOString();
-        const author = item['dc:creator'] || item.author;
+        const title = this._toText(item.title).trim();
+        const link = this._toText(item.link);
+        const description = this._toText(item.description);
+        const pubDate = this._toText(item.pubDate) || new Date().toISOString();
+        const author = this._toText(item['dc:creator']) || this._toText(item.author);
 
         return {
-          id: item.guid || this.generateId('sopilot', 'rss', title),
+          id: this._toText(item.guid) || this.generateId('sopilot', 'rss', title),
           title,
           url: link,
           summary: description.replace(/<[^>]*>/g, '').substring(0, 500),
@@ -81,7 +81,9 @@ export class SoPilotAdapter extends BaseAdapter {
 
   normalize(raw: RawHotItem): HotItem {
     return {
-      id: (raw.id as string) || this.generateId('sopilot', 'rss', raw.title),
+      id: typeof raw.id === 'string' && raw.id.trim().length > 0
+        ? raw.id
+        : this.generateId('sopilot', 'rss', raw.title),
       source: 'sopilot',
       platform: 'rss',
       title: raw.title,
@@ -95,5 +97,23 @@ export class SoPilotAdapter extends BaseAdapter {
       region: 'global',
       raw: raw.raw,
     };
+  }
+
+  private _toText(value: unknown): string {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'bigint' || typeof value === 'boolean') {
+      return String(value);
+    }
+
+    if (value && typeof value === 'object') {
+      const record = value as Record<string, unknown>;
+      const nested = record['#text'] ?? record['#cdata'] ?? record.text;
+      if (typeof nested === 'string') return nested;
+      if (typeof nested === 'number' || typeof nested === 'bigint' || typeof nested === 'boolean') {
+        return String(nested);
+      }
+    }
+
+    return '';
   }
 }

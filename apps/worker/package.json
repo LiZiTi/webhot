@@ -15,6 +15,7 @@
   "dependencies": {
     "@webhot/core": "workspace:*",
     "@webhot/adapters": "workspace:*",
+    "@webhot/logging": "workspace:*",
     "@webhot/schemas": "workspace:*",
     "bullmq": "^5.0.0",
     "ioredis": "^5.4.0",

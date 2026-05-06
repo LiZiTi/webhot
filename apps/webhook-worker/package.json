@@ -13,6 +13,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@webhot/logging": "workspace:*",
     "@webhot/schemas": "workspace:*",
     "@webhot/storage": "workspace:*",
     "yaml": "^2.7.0"

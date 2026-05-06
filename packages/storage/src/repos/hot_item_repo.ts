@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 export class HotItemRepo {
   insert(item: HotItem): void {
     const db = getDb();
+    const id = typeof item.id === 'string' && item.id.trim().length > 0 ? item.id : uuid();
     const stmt = db.prepare(`
       INSERT OR REPLACE INTO hot_items (id, source, platform, title, summary, url, author, rank,
         heat_score, trend_score, finance_score, ai_score, categories, tags, metrics,
@@ -14,7 +15,7 @@ export class HotItemRepo {
         @publishedAt, @collectedAt, @language, @region, @raw)
     `);
     stmt.run({
-      id: item.id || uuid(),
+      id,
       source: item.source,
       platform: item.platform,
       title: item.title,
@@ -49,8 +50,9 @@ export class HotItemRepo {
     `);
     const tx = db.transaction(() => {
       for (const item of items) {
+        const id = typeof item.id === 'string' && item.id.trim().length > 0 ? item.id : uuid();
         insert.run({
-          id: item.id || uuid(),
+          id,
           source: item.source,
           platform: item.platform,
           title: item.title,

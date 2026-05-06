@@ -2,6 +2,11 @@
 # WebHot 一键安装脚本
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./lib.sh
+source "$SCRIPT_DIR/lib.sh"
+resolve_pnpm
+
 echo "========================================="
 echo "  WebHot Setup"
 echo "========================================="
@@ -19,19 +24,7 @@ if [ "$NODE_VERSION" -lt 22 ]; then
 fi
 echo "✅ Node.js $(node -v)"
 
-# 检查 pnpm
-if command -v pnpm &>/dev/null; then
-  PNPM="pnpm"
-  echo "✅ pnpm $(pnpm -v)"
-elif corepack enable >/dev/null 2>&1 && command -v pnpm &>/dev/null; then
-  PNPM="pnpm"
-  echo "✅ pnpm $(pnpm -v)"
-else
-  echo "⚠️  pnpm 未安装，且 corepack 无写入权限"
-  echo "   手动安装: npm install -g pnpm  (可能需要 sudo)"
-  echo "   本次将使用 npx pnpm (临时)"
-  PNPM="npx pnpm"
-fi
+print_pnpm_status
 
 # 检查 Redis
 if command -v redis-cli &>/dev/null; then
@@ -44,17 +37,17 @@ fi
 # 安装依赖
 echo ""
 echo "📦 安装依赖..."
-$PNPM install 2>&1 | grep -v "deprecated"
+"${PNPM_CMD[@]}" install 2>&1 | grep -v "deprecated"
 
 # 类型检查
 echo ""
 echo "🔍 类型检查..."
-$PNPM typecheck 2>&1 | tail -3 || echo "⚠️  类型检查有警告 (不影响运行)"
+"${PNPM_CMD[@]}" typecheck 2>&1 | tail -3 || echo "⚠️  类型检查有警告 (不影响运行)"
 
 # 构建
 echo ""
 echo "🔨 构建..."
-$PNPM build 2>&1 | tail -3 || echo "⚠️  构建有警告 (不影响运行)"
+"${PNPM_CMD[@]}" build 2>&1 | tail -3 || echo "⚠️  构建有警告 (不影响运行)"
 
 # 创建数据目录
 mkdir -p data

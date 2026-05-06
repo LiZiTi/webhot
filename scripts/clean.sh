@@ -2,11 +2,16 @@
 # WebHot 清理脚本
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./lib.sh
+source "$SCRIPT_DIR/lib.sh"
+resolve_pnpm
+
 echo "🧹 Cleaning WebHot..."
 
 # 清理构建产物
 echo "  → dist/"
-pnpm clean 2>/dev/null || true
+"${PNPM_CMD[@]}" clean 2>/dev/null || true
 find . -name "dist" -type d -not -path "./node_modules/*" -exec rm -rf {} + 2>/dev/null || true
 
 # 清理 TypeScript 增量文件

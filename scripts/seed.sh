@@ -3,6 +3,11 @@
 # 向 API 发送 mock 热点数据用于开发测试
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./lib.sh
+source "$SCRIPT_DIR/lib.sh"
+resolve_pnpm
+
 API_URL="${WEBHOT_API_URL:-http://localhost:3000}"
 ENDPOINT="${API_URL}/api/v1/ingest"
 
@@ -10,7 +15,7 @@ echo "🌱 填充测试数据到 ${ENDPOINT}"
 
 # 检查 API 是否运行
 if ! curl -s -o /dev/null -w "%{http_code}" "${API_URL}/health" | grep -q "200"; then
-  echo "❌ API 未运行. 请先启动: pnpm dev:api"
+  echo "❌ API 未运行. 请先启动: ${PNPM_CMD[*]} dev:api"
   exit 1
 fi
 

@@ -4,16 +4,16 @@
   "private": true,
   "description": "WebHot — AI Agent 实时世界状态系统",
   "scripts": {
-    "dev": "pnpm --filter @webhot/api --filter @webhot/mcp --filter @webhot/worker --filter @webhot/webhook-worker dev",
-    "dev:api": "pnpm --filter @webhot/api dev",
-    "dev:mcp": "pnpm --filter @webhot/mcp dev",
-    "dev:worker": "pnpm --filter @webhot/worker dev",
-    "dev:webhook": "pnpm --filter @webhot/webhook-worker dev",
-    "build": "pnpm -r build",
+    "dev": "corepack pnpm --filter @webhot/api --filter @webhot/mcp --filter @webhot/worker --filter @webhot/webhook-worker dev",
+    "dev:api": "corepack pnpm --filter @webhot/api dev",
+    "dev:mcp": "corepack pnpm --filter @webhot/mcp dev",
+    "dev:worker": "corepack pnpm --filter @webhot/worker dev",
+    "dev:webhook": "corepack pnpm --filter @webhot/webhook-worker dev",
+    "build": "corepack pnpm -r build",
     "lint": "eslint . --ext .ts",
-    "typecheck": "pnpm -r typecheck",
-    "clean": "pnpm -r clean",
-    "setup": "pnpm install && pnpm build"
+    "typecheck": "corepack pnpm -r typecheck",
+    "clean": "corepack pnpm -r clean",
+    "setup": "corepack pnpm install && corepack pnpm build"
   },
   "engines": {
     "node": ">=22.0.0",

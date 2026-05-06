@@ -5,11 +5,12 @@ import { v4 as uuid } from 'uuid';
 export class SignalRepo {
   insert(signal: Signal): void {
     const db = getDb();
+    const id = typeof signal.id === 'string' && signal.id.trim().length > 0 ? signal.id : uuid();
     db.prepare(`
       INSERT INTO signals (id, type, topic_id, title, score, description, platforms, triggered_at)
       VALUES (@id, @type, @topicId, @title, @score, @description, @platforms, @triggeredAt)
     `).run({
-      id: signal.id || uuid(),
+      id,
       type: signal.type,
       topicId: signal.topicId,
       title: signal.title,

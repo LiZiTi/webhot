@@ -1,4 +1,7 @@
 import { getDb } from './db.js';
+import { createLogger } from '@webhot/logging';
+
+const log = createLogger('storage');
 
 export function runMigrations(): void {
   const db = getDb();
@@ -124,5 +127,5 @@ export function runMigrations(): void {
     CREATE INDEX IF NOT EXISTS idx_changes_recorded_at ON world_changes(recorded_at);
   `);
 
-  console.log('[storage] migrations complete');
+  log.success('migrations complete');
 }

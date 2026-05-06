@@ -34,6 +34,9 @@ importers:
       '@webhot/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@webhot/logging':
+        specifier: workspace:*
+        version: link:../../packages/logging
       '@webhot/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -72,6 +75,9 @@ importers:
       '@webhot/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@webhot/logging':
+        specifier: workspace:*
+        version: link:../../packages/logging
       '@webhot/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -88,6 +94,9 @@ importers:
 
   apps/webhook-worker:
     dependencies:
+      '@webhot/logging':
+        specifier: workspace:*
+        version: link:../../packages/logging
       '@webhot/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -113,6 +122,9 @@ importers:
       '@webhot/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@webhot/logging':
+        specifier: workspace:*
+        version: link:../../packages/logging
       '@webhot/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -172,6 +184,12 @@ importers:
       '@webhot/timeline':
         specifier: workspace:*
         version: link:../timeline
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/logging:
     devDependencies:
       typescript:
         specifier: ^5.7.0
@@ -250,6 +268,9 @@ importers:
 
   packages/storage:
     dependencies:
+      '@webhot/logging':
+        specifier: workspace:*
+        version: link:../logging
       '@webhot/schemas':
         specifier: workspace:*
         version: link:../schemas

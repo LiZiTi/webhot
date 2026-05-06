@@ -1,0 +1,17 @@
+{
+  "name": "@webhot/logging",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot shared console logger",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

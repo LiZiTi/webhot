@@ -1,9 +1,11 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { WebHotCore } from '@webhot/core';
+import { createLogger } from '@webhot/logging';
 
 const core = new WebHotCore();
-const app = Fastify({ logger: true });
+const log = createLogger('api');
+const app = Fastify({ logger: false });
 
 await app.register(cors, { origin: true });
 
@@ -136,8 +138,17 @@ const host = process.env.HOST || '0.0.0.0';
 
 try {
   await app.listen({ port, host });
-  console.log(`[webhot-api] running on http://${host}:${port}`);
+  log.panel(
+    'API Server',
+    [
+      { label: 'Status', value: 'ready' },
+      { label: 'URL', value: `http://${host}:${port}` },
+      { label: 'Health', value: '/health' },
+      { label: 'Mode', value: process.env.NODE_ENV || 'development' },
+    ],
+    'Fastify + CORS + shared core',
+  );
 } catch (err) {
-  app.log.error(err);
+  log.error('fatal startup error', err);
   process.exit(1);
 }

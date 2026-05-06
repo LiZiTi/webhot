@@ -5,13 +5,14 @@ import { v4 as uuid } from 'uuid';
 export class TopicRepo {
   upsert(cluster: TopicCluster): void {
     const db = getDb();
+    const id = typeof cluster.id === 'string' && cluster.id.trim().length > 0 ? cluster.id : uuid();
     db.prepare(`
       INSERT OR REPLACE INTO topic_clusters (id, title, aliases, category, hot_items,
         trend_score, growth_score, platforms, related_stocks, updated_at)
       VALUES (@id, @title, @aliases, @category, @hotItems,
         @trendScore, @growthScore, @platforms, @relatedStocks, datetime('now'))
     `).run({
-      id: cluster.id || uuid(),
+      id,
       title: cluster.title,
       aliases: JSON.stringify(cluster.aliases),
       category: cluster.category,

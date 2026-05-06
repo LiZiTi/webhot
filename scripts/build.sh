@@ -2,15 +2,20 @@
 # WebHot 构建脚本
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./lib.sh
+source "$SCRIPT_DIR/lib.sh"
+resolve_pnpm
+
 echo "🔨 Building WebHot..."
 
 # 类型检查
 echo "  → typecheck..."
-pnpm typecheck 2>&1 | tail -5 || echo "  ⚠️  Type check warnings (non-blocking)"
+"${PNPM_CMD[@]}" typecheck 2>&1 | tail -5 || echo "  ⚠️  Type check warnings (non-blocking)"
 
 # 构建所有包
 echo "  → build..."
-pnpm build 2>&1 | tail -5
+"${PNPM_CMD[@]}" build 2>&1 | tail -5
 
 # 确保输出目录存在
 echo "  → verifying outputs..."
