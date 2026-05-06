@@ -1,0 +1,30 @@
+{
+  "name": "webhot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot — AI Agent 实时世界状态系统",
+  "scripts": {
+    "dev": "pnpm --filter @webhot/api --filter @webhot/mcp --filter @webhot/worker --filter @webhot/webhook-worker dev",
+    "dev:api": "pnpm --filter @webhot/api dev",
+    "dev:mcp": "pnpm --filter @webhot/mcp dev",
+    "dev:worker": "pnpm --filter @webhot/worker dev",
+    "dev:webhook": "pnpm --filter @webhot/webhook-worker dev",
+    "build": "pnpm -r build",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean",
+    "setup": "pnpm install && pnpm build"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@webhot/webhook-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot Webhook Dispatcher — 事件主动推送服务",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@webhot/schemas": "workspace:*",
+    "@webhot/storage": "workspace:*",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

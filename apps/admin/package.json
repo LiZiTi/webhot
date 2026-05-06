@@ -1,0 +1,12 @@
+{
+  "name": "@webhot/admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot Admin Dashboard",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'TODO: admin dashboard dev server'",
+    "build": "echo 'TODO: admin dashboard build'",
+    "clean": "rm -rf dist"
+  }
+}

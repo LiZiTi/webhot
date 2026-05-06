@@ -1,0 +1,48 @@
+# WebHot Webhook 推送配置
+
+webhooks:
+  # AI Research Agent 订阅
+  - id: ai_research_agent
+    url: http://localhost:4000/webhook/webhot
+    secret: your-secret-here-ai
+    events:
+      - topic.exploding
+      - topic.cross_platform
+      - signal.ai
+      - signal.created
+    retryMax: 3
+    timeoutMs: 10000
+
+  # Finance Agent 订阅
+  - id: finance_agent
+    url: http://localhost:4001/webhook/webhot
+    secret: your-secret-here-finance
+    events:
+      - topic.exploding
+      - topic.cross_platform
+      - signal.finance
+      - signal.risk
+      - signal.created
+    retryMax: 3
+    timeoutMs: 10000
+
+  # Telegram / 飞书 通知
+  - id: notification_bot
+    url: http://localhost:4002/webhook/webhot
+    secret: your-secret-here-bot
+    events:
+      - topic.exploding
+      - signal.ai
+      - signal.finance
+      - signal.risk
+    retryMax: 5
+    timeoutMs: 5000
+
+  # 开发调试 (接收全部事件)
+  - id: dev_debug
+    url: http://localhost:4003/webhook/webhot
+    secret: dev-debug-secret
+    events:
+      - "*"
+    retryMax: 1
+    timeoutMs: 10000

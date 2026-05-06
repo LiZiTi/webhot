@@ -1,0 +1,57 @@
+# WebHot 数据源配置
+
+sources:
+  # --- Phase 1 已有 ---
+  - id: newsnow_weibo
+    adapter: newsnow
+    platform: weibo
+    endpoint: https://newsnow.busiyi.world/api/s?id=weibo
+    interval: 300
+
+  - id: newsnow_zhihu
+    adapter: newsnow
+    platform: zhihu
+    endpoint: https://newsnow.busiyi.world/api/s?id=zhihu
+    interval: 300
+
+  - id: tophub
+    adapter: tophub
+    endpoint: https://tophub.today
+    interval: 300
+
+  - id: sopilot_x
+    adapter: sopilot
+    endpoint: https://sopilot.net/rss/hottweets
+    interval: 600
+
+  # --- 新增适配器 ---
+  - id: github_trending
+    adapter: github_trending
+    interval: 600
+
+  - id: hackernews
+    adapter: hackernews
+    interval: 300
+
+  - id: reddit_programming
+    adapter: reddit
+    subreddit: programming
+    interval: 600
+
+  - id: reddit_technology
+    adapter: reddit
+    subreddit: technology
+    interval: 600
+
+  - id: reddit_artificial
+    adapter: reddit
+    subreddit: artificial
+    interval: 600
+
+  - id: twitter_x
+    adapter: twitter
+    interval: 300
+
+  - id: finance_news
+    adapter: finance_news
+    interval: 120

@@ -1,0 +1,48 @@
+# WebHot 分类配置
+
+categories:
+  AI:
+    keywords:
+      - llm
+      - ai
+      - agent
+      - openai
+      - claude
+      - deepseek
+      - mcp
+      - cursor
+
+  Finance:
+    keywords:
+      - stock
+      - market
+      - etf
+      - semiconductor
+      - hbm
+      - gpu
+
+  Technology:
+    keywords:
+      - cloud
+      - gpu
+      - cpu
+      - database
+      - frontend
+      - backend
+      - open source
+
+  Crypto:
+    keywords:
+      - bitcoin
+      - ethereum
+      - crypto
+      - defi
+      - web3
+
+  Developer:
+    keywords:
+      - github
+      - programming
+      - rust
+      - typescript
+      - python

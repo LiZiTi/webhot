@@ -1,0 +1,12 @@
+{
+  "name": "@webhot/signal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot Signal Engine — 信号引擎",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": { "typecheck": "tsc --noEmit", "clean": "rm -rf dist" },
+  "dependencies": { "@webhot/schemas": "workspace:*", "@webhot/storage": "workspace:*", "uuid": "^11.0.0" },
+  "devDependencies": { "@types/uuid": "^10.0.0", "typescript": "^5.7.0" }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@webhot/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebHot Client SDK",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@webhot/schemas": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
